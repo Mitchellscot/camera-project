@@ -1,0 +1,14 @@
+{
+  "name": "camera-project",
+  "version": "1.0.0",
+  "description": "takes a picture and writes it to a folder",
+  "main": "start.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "onoff": "^6.0.3"
+  }
+}
