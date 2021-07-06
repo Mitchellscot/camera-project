@@ -1,55 +1,22 @@
 const { execSync } = require("child_process");
+const sharp = require('sharp');
 
-function takePicture() {
-
-    console.log('this is where I take a picture');
-    let date = new Date();
-    let filename = date.toISOString();
-    const filePath = `/mnt/${filename}.jpg`
-    exec(`echo camera | sudo raspistill -o ${filePath} -t 1000`, {uid: 1000}, (error, stdout, stderr) => {
-      if (error){
-        console.log(`error ${error}`);
-        return;
-      }
-      if(stderr){
-        console.log(`stderr ${stderr}`);
-        return;
-      }
-      if (stdout){
-        console.log(`stdout ${stdout}`);
-      }
-    });
-    return filePath;
-  };
-
-  function takingPicture() {
-    let date = new Date();
-    let filename = date.toISOString();
-    const filePath = `/mnt/${filename}.jpg`;
-    const command = `raspistill -o /mnt/${filePath} -t 2000`;
-    execSync(`raspistill -t 2000 -n -o /mnt/%%.jpg`);
+  function takePicture() {
+    execSync(`raspistill -t 2000 -n -o ~/image.jpg`);
+    return '/home/pi/image.jpg'
   }
 
   function cropImage(picture) {
-
-    setTimeout(() => {
-      console.log('Cropping image');
-      exec(`mv ${picture} /mnt`, (error, stdout, stderr) => {
-        if (error){
-          console.log(`error ${error}`);
-          return;
-        }
-        if(stderr){
-          console.log(`stderr ${stderr}`);
-          return;
-        }
-        if (stdout){
-          console.log(`stdout ${stdout}`);
-        }
-      });
-      console.log('done');
-      }, 3000);
-      return;
+    let date = new Date();
+    let filename = date.toISOString();
+    const filePath = `/home/pi/image2.jpg`; 
+    let image = '/home/pi/image.jpg';
+    sharp(image).extract({width: 1920, height: 1080, left: 60, top: 40})
+    .toFile(filePath)
+    .then((result) => execSync(`mv /home/pi/image2.jpg /home/pi/Desktop/image.jpg; rm -rf ~/*.jpg;`))
+    //.then((result) => execSync(`sudo umount /mnt`))
+    .catch((err) => console.log(`error ${err}`));
+    return;
   }
 
-  module.exports = {takePicture, cropImage, takingPicture };
+  module.exports = {takePicture, cropImage };
