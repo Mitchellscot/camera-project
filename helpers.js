@@ -2,7 +2,12 @@ const { execSync } = require("child_process");
 const sharp = require('sharp');
 
   function takePicture() {
-    execSync(`raspistill -t 2000 -n -o ~/image.jpg`);
+    try{
+      execSync(`raspistill -t 2000 -n -o ~/image.jpg`);
+    }
+    catch(err){
+      console.log(err);
+    }
     return '/home/pi/image.jpg'
   }
 
@@ -14,7 +19,7 @@ const sharp = require('sharp');
     sharp(image).extract({width: 1920, height: 1080, left: 60, top: 40})
     .toFile(filePath)
     .then((result) => execSync(`mv /home/pi/croppedImage.jpg /mnt/image.jpg; rm -rf ~/*.jpg;`))
-    //.then((result) => execSync(`sudo umount /mnt`))
+    .then((result) => execSync(`sudo umount /mnt`))
     .catch((err) => console.log(`error ${err}`));
     return;
   }
