@@ -4,11 +4,15 @@
   "description": "takes a picture and writes it to a folder",
   "main": "start.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node start.js",
+    "stop": "node start.js",
+    "restart": "node start.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "onoff": "^6.0.3"
+    "onoff": "^6.0.3",
+    "sharp": "^0.28.3"
   }
 }
