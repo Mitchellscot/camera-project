@@ -2,25 +2,27 @@ const { execSync } = require("child_process");
 const sharp = require('sharp');
 
   function takePicture() {
+    console.log('taking picture');
+    let filename = fileName();
     try{
-      execSync(`raspistill -t 2000 -n -o ~/image.jpg`);
+      execSync(`raspistill -t 2000 -n -o /home/pi/${filename}.jpg`);
     }
     catch(err){
       console.log(err);
     }
-    return '/home/pi/image.jpg'
+    console.log('done taking picture');
+    return `/home/pi/${filename}.jpg`;
   }
 
   function cropImage(picture) {
-    let date = new Date();
-    let filename = date.toISOString();
-    const filePath = `/home/pi/croppedImage.jpg`; 
-    let image = '/home/pi/image.jpg';
-    sharp(image).extract({width: 1920, height: 1080, left: 60, top: 40})
-    .toFile(filePath)
-    .then((result) => execSync(`mv /home/pi/croppedImage.jpg /mnt/image.jpg; rm -rf ~/*.jpg;`))
-    .then((result) => execSync(`sudo umount /mnt`))
-    .catch((err) => console.log(`error ${err}`));
+    console.log('taking a crop on ', picture);
+    try{                                  //left, top     //right, bottom
+      execSync(`convert ${picture} -crop +980+420 -crop -1200-60 ${picture}`);
+    }
+    catch(err){
+      console.log(err);
+    }
+    console.log('done taking a crop');
     return;
   }
 
@@ -35,6 +37,32 @@ const sharp = require('sharp');
       });
       process.exit();
     }, 1000);
+  }
+
+  function fileName() {
+    let day = new Date();
+    let dd = day.getDate()
+    let mm = day.getMonth()+1;
+    let yyyy = day.getFullYear();
+    let hh = day.getHours();
+    let mn = day.getMinutes();
+    let ss = day.getSeconds();
+    if(dd<10) {
+        dd = '0'+ dd
+    } 
+    if(mm<10) {
+        mm = '0'+ mm
+    }
+    if(mn<10) {
+        mn = '0'+ mn
+    }
+    if(ss<10) {
+        ss = '0'+ ss
+    }
+    if(hh<10) {
+        hh = '0'+ hh
+    }
+    return yyyy + mm + dd + hh + mn + ss;
   }
 
   module.exports = {takePicture, cropImage, restartProgram };
