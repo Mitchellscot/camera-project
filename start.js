@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 console.log("Hello Miguel");
 const {takePicture, cropImage } = require('./helpers.js');
 const Gpio = require('onoff').Gpio;
